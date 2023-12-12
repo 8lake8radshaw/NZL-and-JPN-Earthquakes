@@ -2,7 +2,7 @@
 [NZL and JPN Earthquakes]
 │   index.html
 │   earthquake.html
-│   README.md
+│   readme.md
 └───assets
 │       JPN-Earthquakes.geojson
 │       NZL-Earthquakes.geojson
