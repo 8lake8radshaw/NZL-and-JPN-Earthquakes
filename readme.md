@@ -1,3 +1,4 @@
+```powershell
 [NZL and JPN Earthquakes]
 │   index.html
 │   earthquake.html
@@ -11,3 +12,4 @@
 │       japan.json
 └───css
         main.css
+```
