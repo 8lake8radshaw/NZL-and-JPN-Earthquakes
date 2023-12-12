@@ -77,7 +77,7 @@ let map = new mapboxgl.Map({
 async function geojsonFetch() {
     try {
         // Fetch earthquake GeoJSON data.
-        let response = await fetch('assets/earthquakes.geojson');
+        let response = await fetch('assets/NZL-Earthquakes.geojson');
         let earthquakes = await response.json();
         
         // Fetch NZL GeoJSON data.
