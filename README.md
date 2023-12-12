@@ -1,7 +1,7 @@
-NZLearthquakes
-    │index.html
-    │earthquake.html
-    │readme.md
-    ├─assets
-    │      earthquakes.geojson
-    │      japan.json
+japanearthquake
+│   index.html
+│   earthquake.html
+│   README.md
+└───assets
+        earthquakes.geojson
+        japan.json
