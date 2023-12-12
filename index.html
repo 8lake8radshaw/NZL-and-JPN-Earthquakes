@@ -6,7 +6,9 @@
     <meta name="viewport" content="initial-scale=1,maximum-scale=1,user-scalable=no">
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.css" rel="stylesheet">
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.5.0/mapbox-gl.js"></script>
-    <link href="https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/main.css">
+
     <style>
         body {
             margin: 0;
@@ -46,7 +48,8 @@
 <body>
     <main id="container">
         <div id="side-panel">
-            <h2>Earthquake List</h2>
+            <h2>Earthquakes in NZL (2008-2023)</h2>
+            <h3>Earthquake List</h3>
             <button id="sort-button">Sort by Magnitude</button>
             <table>
                 <tr>
@@ -65,7 +68,7 @@
 // Initialize the map.
 let map = new mapboxgl.Map({
     container: 'map', // container ID
-    style: 'mapbox://styles/mapbox/satellite-v9', // style URL
+    style: 'mapbox://styles/mapbox/outdoors-v12', // style URL
     zoom: 4, // starting zoom
     center: [172.4663, -43.3745] // starting center
 });
@@ -90,18 +93,6 @@ async function geojsonFetch() {
                 data: earthquakes
             });
             
-            // Add a layer to display the earthquakes as circles.
-            map.addLayer({
-                'id': 'earthquakes-layer',
-                'type': 'circle',
-                'source': 'earthquakes',
-                'paint': {
-                    'circle-radius': 8,
-                    'circle-stroke-width': 2,
-                    'circle-color': 'red',
-                    'circle-stroke-color': 'white'
-                }
-            });
 
             // Add the NZL data as a source.
             map.addSource('NZL', {
@@ -115,8 +106,21 @@ async function geojsonFetch() {
                 'type': 'fill',
                 'source': 'NZL',
                 'paint': {
-                    'fill-color': '#0080ff',
+                    'fill-color': '#710193',
                     'fill-opacity': 0.5
+                }
+            });
+
+            // Add a layer to display the earthquakes as circles.
+            map.addLayer({
+                'id': 'earthquakes-layer',
+                'type': 'circle',
+                'source': 'earthquakes',
+                'paint': {
+                    'circle-radius': 6,
+                    'circle-stroke-width': 1,
+                    'circle-color': 'red',
+                    'circle-stroke-color': 'white'
                 }
             });
             
@@ -151,33 +155,68 @@ function generateTable(earthquakes) {
     });
 }
 
-// Function to sort the table by magnitude.
-function sortTable(earthquakes) {
-    let table, rows, switching, i, x, y, shouldSwitch;
-    table = document.getElementsByTagName("table")[0];
-    switching = true;
+let currentSort = 'highest'; // default sort order
 
-    while (switching) {
-        switching = false;
-        rows = table.rows;
+// Function to sort the table based on the current sort order.
+function sortTable() {
+  let table, rows, switching, i, x, y, shouldSwitch;
+  table = document.getElementsByTagName("table")[0];
+  switching = true;
 
-        for (i = 1; i < (rows.length - 1); i++) {
-            shouldSwitch = false;
-            x = parseFloat(rows[i].getElementsByTagName("td")[1].innerHTML);
-            y = parseFloat(rows[i + 1].getElementsByTagName("td")[1].innerHTML);
-            
-            if (x < y) {
-                shouldSwitch = true;
-                break;
-            }
-        }
+  while (switching) {
+    switching = false;
+    rows = table.rows;
 
-        if (shouldSwitch) {
-            rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
-            switching = true;
-        }
+    for (i = 1; i < (rows.length - 1); i++) {
+      shouldSwitch = false;
+      x = parseFloat(rows[i].getElementsByTagName("td")[1].innerHTML);
+      y = parseFloat(rows[i + 1].getElementsByTagName("td")[1].innerHTML);
+
+      // Check if the rows need to switch place based on the current sort order.
+      if ((currentSort === 'highest' && x < y) ||
+          (currentSort === 'lowest' && x > y) ||
+          (currentSort === 'time' && new Date(rows[i].getElementsByTagName("td")[2].innerHTML) > new Date(rows[i + 1].getElementsByTagName("td")[2].innerHTML))) {
+        shouldSwitch = true;
+        break;
+      }
     }
+
+    if (shouldSwitch) {
+      rows[i].parentNode.insertBefore(rows[i + 1], rows[i]);
+      switching = true;
+    }
+  }
 }
+
+// Function to change the sort order and then sort the table.
+function changeSortOrder() {
+  currentSort = currentSort === 'highest' ? 'lowest' : (currentSort === 'lowest' ? 'time' : 'highest');
+  sortTable(); // Call the sort function with the new order.
+
+  let button = document.getElementById('sort-button');
+  switch (currentSort) {
+    case 'highest':
+      currentSort = 'lowest';
+      button.innerHTML = 'Sort by Lowest Magnitude';
+      break;
+    case 'lowest':
+      currentSort = 'time';
+      button.innerHTML = 'Sort by Time';
+      break;
+    case 'time':
+      currentSort = 'highest';
+      button.innerHTML = 'Sort by Highest Magnitude';
+      break;
+  }
+  sortTable(); // Call the sort function with the new order.
+  
+}
+
+
+
+// Event listener for the button click to change sort order.
+document.getElementById('sort-button').addEventListener('click', changeSortOrder);
+
 
 // Call the function to fetch and process GeoJSON data.
 geojsonFetch();

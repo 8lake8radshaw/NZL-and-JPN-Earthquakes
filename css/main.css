@@ -1,11 +1,29 @@
 body {
-    font-family: 'Roboto', sans-serif;
+    font-family: 'Nunito', sans-serif;
   }
-  h1, h2, h3 {
-    font-family: 'Roboto', sans-serif;
+
+  html, body, #map {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+}
+
+#side-panel {
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 400px; /* or any desired width */
+    background: rgba(255, 255, 255, 0.75); /* semi-transparent white */
+    z-index: 10;
+    height: 100%;
+    overflow-y: auto; /* to allow scrolling */
+    padding-left: 10px; /* Adjust the value as needed */
+}
+
+@media (max-width: 1024px) {
+    #side-panel {
+      display: none;
+    }
   }
   
-  p {
-    font-family: 'Roboto', sans-serif;
-  }
-    
