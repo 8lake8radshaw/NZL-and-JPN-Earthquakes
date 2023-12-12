@@ -1,4 +1,4 @@
-japanearthquake
+NZL and JPN Earthquakes
 │   index.html
 │   earthquake.html
 │   README.md
